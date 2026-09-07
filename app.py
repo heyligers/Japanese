@@ -192,11 +192,21 @@ def render_practice_section(title, char_dict, char_groups, session_prefix):
     ans_input_key = f"{session_prefix}_ans_input"
     
     with st.expander("Practice Settings", expanded=True):
-        selected_groups = st.multiselect(
-            f"Select groups to practice:", 
-            list(char_groups.keys()), 
-            default=[list(char_groups.keys())[0]]
-        )
+        group_keys = list(char_groups.keys())
+        col1, col2 = st.columns(2)
+        with col1:
+            basic_groups = st.multiselect(
+                "Basic Characters:", 
+                group_keys[:10], 
+                default=[group_keys[0]]
+            )
+        with col2:
+            dakuten_groups = st.multiselect(
+                "Dakuten & Handakuten:", 
+                group_keys[10:], 
+                default=[]
+            )
+        selected_groups = basic_groups + dakuten_groups
         mode = st.radio("Practice Mode:", ["Type Answer (Strict)", "Self-Graded (Standard Flashcards)"], key=f"{session_prefix}_mode")
         
         if st.button("Start / Reset Deck", key=f"{session_prefix}_reset"):

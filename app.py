@@ -241,12 +241,13 @@ def render_practice_section(title, char_dict, char_groups, session_prefix):
                         st.session_state[deck_key].pop(0) # Remove from deck
                     else:
                         st.session_state[quiz_msg_key] = f"Incorrect! {current_char} is '{correct_romaji}'. Moved to back of the deck."
-                        # Move to back of deck
                         st.session_state[deck_key].append(st.session_state[deck_key].pop(0))
-                    st.session_state[ans_input_key] = "" # Clear input
+                    # We do NOT manually clear st.session_state[ans_input_key] here.
+                    # clear_on_submit=True will handle it cleanly without causing a blur event!
                 
-                st.text_input("Type the Romaji:", key=ans_input_key, on_change=check_ans)
-                st.button("Submit", on_click=check_ans, use_container_width=True)
+                with st.form(f"{session_prefix}_strict_form", clear_on_submit=True):
+                    st.text_input("Type the Romaji:", key=ans_input_key)
+                    st.form_submit_button("Submit", on_click=check_ans, use_container_width=True)
 
                 if st.session_state.get(quiz_msg_key):
                     if "Correct" in st.session_state[quiz_msg_key]:

@@ -245,15 +245,15 @@ def render_practice_section(title, char_dict, char_groups, session_prefix):
                         st.session_state[deck_key].append(st.session_state[deck_key].pop(0))
                     st.session_state[ans_input_key] = "" # Clear input
                 
+                st.text_input("Type the Romaji:", key=ans_input_key, on_change=check_ans)
+                st.button("Submit", on_click=check_ans, use_container_width=True)
+
                 if st.session_state.get(quiz_msg_key):
                     if "Correct" in st.session_state[quiz_msg_key]:
                         st.success(st.session_state[quiz_msg_key])
                     else:
                         st.error(st.session_state[quiz_msg_key])
                     st.session_state[quiz_msg_key] = ""
-                    
-                st.text_input("Type the Romaji:", key=ans_input_key, on_change=check_ans)
-                st.button("Submit", on_click=check_ans, use_container_width=True)
                 
                 # JavaScript injection to keep the keyboard open (autofocus the input)
                 st.components.v1.html(

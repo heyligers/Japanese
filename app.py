@@ -187,12 +187,15 @@ def render_practice_section(title, char_dict, char_groups, session_prefix):
             random.shuffle(st.session_state[deck_key])
             st.session_state[show_ans_key] = False
             st.session_state[quiz_msg_key] = ""
+            st.session_state[f"{session_prefix}_balloons_shown"] = False
     
     if deck_key in st.session_state:
         deck = st.session_state[deck_key]
         if not deck:
             st.success("You've mastered all the characters in this deck! Great job!")
-            st.balloons()
+            if not st.session_state.get(f"{session_prefix}_balloons_shown", False):
+                st.balloons()
+                st.session_state[f"{session_prefix}_balloons_shown"] = True
         else:
             current_char = deck[0]
             correct_romaji = char_dict[current_char]

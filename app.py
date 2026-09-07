@@ -252,7 +252,6 @@ def main():
     st.markdown("""
         <style>
         #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
         footer {visibility: hidden;}
         
         /* Make flashcard font size responsive on small screens */

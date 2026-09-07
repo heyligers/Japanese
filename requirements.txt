@@ -1,0 +1,7 @@
+streamlit
+pandas
+pykakasi
+deep-translator
+pytesseract
+Pillow
+gTTS

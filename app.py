@@ -7,6 +7,7 @@ import pytesseract
 from translator import process_input, generate_audio
 import random
 import datetime
+import time
 
 DB_FILE = 'vocab_db.csv'
 
@@ -234,41 +235,24 @@ def render_practice_section(title, char_dict, char_groups, session_prefix):
             st.markdown(f"<h1 class='flashcard-char'>{current_char}</h1>", unsafe_allow_html=True)
             
             if mode == "Type Answer (Strict)":
-                def check_ans():
-                    user_ans = st.session_state[ans_input_key].strip().lower()
-                    if user_ans == correct_romaji:
-                        st.session_state[quiz_msg_key] = "Correct!"
-                        st.session_state[deck_key].pop(0) # Remove from deck
-                    else:
-                        st.session_state[quiz_msg_key] = f"Incorrect! {current_char} is '{correct_romaji}'. Moved to back of the deck."
-                        st.session_state[deck_key].append(st.session_state[deck_key].pop(0))
-                    # We do NOT manually clear st.session_state[ans_input_key] here.
-                    # clear_on_submit=True will handle it cleanly without causing a blur event!
-                
-                with st.form(f"{session_prefix}_strict_form", clear_on_submit=True):
-                    st.text_input("Type the Romaji:", key=ans_input_key)
-                    st.form_submit_button("Submit", on_click=check_ans, use_container_width=True)
-
                 if st.session_state.get(quiz_msg_key):
                     if "Correct" in st.session_state[quiz_msg_key]:
                         st.success(st.session_state[quiz_msg_key])
                     else:
                         st.error(st.session_state[quiz_msg_key])
                     st.session_state[quiz_msg_key] = ""
-                
-                # JavaScript injection to keep the keyboard open (autofocus the input)
-                st.components.v1.html(
-                    """
-                    <script>
-                        const input = window.parent.document.querySelector('input[type="text"]');
-                        if (input) {
-                            input.focus();
-                        }
-                    </script>
-                    """,
-                    height=0,
-                    width=0,
-                )
+                    
+                user_ans = st.chat_input("Type the Romaji...", key=ans_input_key)
+                if user_ans:
+                    user_ans = user_ans.strip().lower()
+                    if user_ans == correct_romaji:
+                        st.session_state[quiz_msg_key] = "Correct!"
+                        st.session_state[deck_key].pop(0) # Remove from deck
+                    else:
+                        st.session_state[quiz_msg_key] = f"Incorrect! {current_char} is '{correct_romaji}'. Moved to back of the deck."
+                        st.session_state[deck_key].append(st.session_state[deck_key].pop(0))
+                    st.rerun()
+
             
             else: # Self-Graded
                 if not st.session_state.get(show_ans_key, False):

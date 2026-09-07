@@ -252,9 +252,22 @@ def render_practice_section(title, char_dict, char_groups, session_prefix):
                         st.error(st.session_state[quiz_msg_key])
                     st.session_state[quiz_msg_key] = ""
                     
-                with st.form(f"{session_prefix}_strict_form", clear_on_submit=True):
-                    st.text_input("Type the Romaji:", key=ans_input_key)
-                    st.form_submit_button("Submit", on_click=check_ans)
+                st.text_input("Type the Romaji:", key=ans_input_key, on_change=check_ans)
+                st.button("Submit", on_click=check_ans, use_container_width=True)
+                
+                # JavaScript injection to keep the keyboard open (autofocus the input)
+                st.components.v1.html(
+                    """
+                    <script>
+                        const input = window.parent.document.querySelector('input[type="text"]');
+                        if (input) {
+                            input.focus();
+                        }
+                    </script>
+                    """,
+                    height=0,
+                    width=0,
+                )
             
             else: # Self-Graded
                 if not st.session_state.get(show_ans_key, False):

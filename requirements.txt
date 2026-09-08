@@ -2,6 +2,6 @@ streamlit
 pandas
 pykakasi
 deep-translator
-pytesseract
+easyocr
 Pillow
 gTTS

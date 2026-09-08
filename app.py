@@ -3,7 +3,8 @@ import pandas as pd
 import os
 import uuid
 from PIL import Image
-import pytesseract
+import easyocr
+import numpy as np
 from translator import process_input, generate_audio
 import random
 import datetime
@@ -413,11 +414,13 @@ def main():
             if st.button("Extract Text"):
                 with st.spinner("Extracting Japanese text..."):
                     try:
-                        # Assuming 'jpn' language pack is installed in Tesseract
-                        extracted_text = pytesseract.image_to_string(image, lang='jpn')
+                        # Verwende easyocr für die Textextraktion (unterstützt Japanisch ohne Systempakete)
+                        reader = easyocr.Reader(['ja', 'en'])
+                        result = reader.readtext(np.array(image))
+                        extracted_text = " ".join([text for _, text, _ in result])
                         st.session_state.extracted_text = extracted_text
                     except Exception as e:
-                        st.error(f"Error extracting text. Ensure Tesseract is installed with 'jpn' language. Details: {e}")
+                        st.error(f"Error extracting text. Details: {e}")
                         
         if 'extracted_text' in st.session_state:
             st.markdown("### Extracted Text")

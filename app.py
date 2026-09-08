@@ -102,21 +102,24 @@ def init_db():
 
 def load_data():
     """Load vocabulary data into a Pandas DataFrame."""
-    if os.path.exists(DB_FILE):
-        df = pd.read_csv(DB_FILE)
-        changed = False
-        if 'next_review_date' not in df.columns:
-            df['next_review_date'] = datetime.date.today().isoformat()
-            changed = True
-        if 'interval' not in df.columns:
-            df['interval'] = 0
-            changed = True
-        if 'ease_factor' not in df.columns:
-            df['ease_factor'] = 2.5
-            changed = True
-        if changed:
-            df.to_csv(DB_FILE, index=False)
-        return df
+    if os.path.exists(DB_FILE) and os.path.getsize(DB_FILE) > 0:
+        try:
+            df = pd.read_csv(DB_FILE)
+            changed = False
+            if 'next_review_date' not in df.columns:
+                df['next_review_date'] = datetime.date.today().isoformat()
+                changed = True
+            if 'interval' not in df.columns:
+                df['interval'] = 0
+                changed = True
+            if 'ease_factor' not in df.columns:
+                df['ease_factor'] = 2.5
+                changed = True
+            if changed:
+                df.to_csv(DB_FILE, index=False)
+            return df
+        except pd.errors.EmptyDataError:
+            pass
     return pd.DataFrame()
 
 def save_entry(english, kanji, kana, romaji):

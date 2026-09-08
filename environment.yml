@@ -1,0 +1,17 @@
+name: japanese-app
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - streamlit
+  - pandas
+  - pillow
+  - tesseract
+  - tesseract-data-jpn
+  - pip
+  - pip:
+    - pykakasi
+    - deep-translator
+    - pytesseract
+    - gtts

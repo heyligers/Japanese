@@ -1,7 +1,0 @@
-streamlit
-pandas
-pykakasi
-deep-translator
-easyocr
-Pillow
-gTTS
